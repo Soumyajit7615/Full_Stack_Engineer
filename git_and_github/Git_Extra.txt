@@ -1,0 +1,369 @@
+Configuring Git:-
+1.git config --global user.name "Soumyajit Das"
+2.git config --global user.email "soumyajit7615@gmail.com"
+3.git config --global user.password "secret"
+
+Private Repository:-
+Settings->Developer settings->personal access token->generate token->ghp_xDIg1WJFOyaqaDLmMILBr3J4AamKAt2FOhRl
+->delete token->generate new token
+my private github repo: https://github.com/Soumyajit7615/myprivategitrepo.git
+If someone want to clone my repo they have to type below code.
+4.https://ghp_xDIg1WJFOyaqaDLmMILBr3J4AamKAt2FOhRl:x-oauth-basic@github.com/Soumyajit7615/myprivategitrepo.git
+5.git config --global credential.helper cache
+
+Go To A Folder:-
+1.git init
+2.git remote add origin https://github.com/Soumyajit7615/myprivategitrepo.git
+3.git pull origin main
+4.git push origin main
+5.git remote -v
+
+
+Version Control and History Using Git:-
+1.cd words/
+2.git log --oneline --graph --decorate --all
+3.git reset HEAD^
+4.git log --oneline --graph --decorate --all
+5.git reset HEAD^1
+6.git reflog
+7.git reset e363453
+8.git log --oneline --graph --decorate --all
+9.git reset e378363
+10.git reset HEAD^^
+11.git reset e363453
+12.git log --oneline --graph --decorate --all
+13.git reset HEAD@{3}
+14.git log --oneline --graph --decorate --all
+15.git reflog
+
+Compare Branches Via Command Line:-
+1.cd time-tracker/
+2.git pull
+3.git pull origin master
+4.git branch -a
+5.git fetch origin test-branch
+6.git branch test origin/test-branch
+7.git checkout test
+8.git pull
+9.git diff master test
+10.git checkout master
+11.git branch -a
+12.git branch -d test
+13.git status
+
+Stash vs Branch:-
+1.git status
+2.npp
+3.ls
+4.npp README.md
+5.git status
+6.git ls-files
+7.git stash
+8.git checkout -b test
+9.git stash pop
+10.git stash list
+11.git checkout master.
+12.npp pom.xml
+13.git status
+14.git stash
+15.git status
+16.npp humans.txt
+17.git stash
+18.git stash list
+19.git stash apply stash@{1}
+20.git stash list
+21.git stash clear
+22.git stash list
+23.git status
+
+Getting Help:-
+1.git help stash
+
+Cherry Pick:-
+1.git status
+2.git commit -am "express update"
+3.git checkout -b develop
+4.git status
+5.cd web/
+6.npp pom.xml
+7.git commit -am "my cherry pick commit"
+8.cd ..
+9.cd core/
+10.npp pom.xml
+11.git commit -am "non-cherry pick commit"
+12.pwd
+
+Log:-
+1.git log --oneline --graph --decorate
+Amending Commits:-
+1.git commit --amend (Redo the previous commit)
+2.git commit -a -m "commit message" (Add+Commit)
+
+Ignoring Files:-
+1.create a file called .gitignore
+2.npp .gitignore
+3.ls -a
+4.write some files name in .gitignore which should be untracked 
+5.git add .
+6.git commit -m "Add .gitignore file"
+7.website .gitignore.io
+
+Branch:-
+1.master(branch) pointer refers last commit.
+2.head pointer refers to a particular branch at a time.
+3.head->master->last commit in master branch
+4.head->my_design_branch->last commit in my_design_branch
+5.head->my_database_handler_branch->last commit in my_database_handler_branch
+6.In git (checkout/switch) same.
+7.Now in git (master branch) ->In Github it is (main branch)
+8.git checkout -b branch_name
+9.git switch -c branch_name
+10.git branch -d branch_name (delete branch) (delete a branch from another branch)
+11.git branch -D branch_name (Forceful Delete)
+12.git git branc -m new_branch_name (rename branch m ->move/rename) (rename branch from that branch)
+
+More Concept HEAD Pointer:-
+1.git chekout master
+2.git log
+3.ls -a
+4.cd .git
+5.ls
+6.cat HEAD
+
+Git Diff:-
+->difference between working directory and staging area.
+->difference between HEAD
+->git diff HEAD [change in staged or unstaged all file]
+->git diff [only unstaged changes]
+->git diff --staged [difference in staged files]
+->git diff --staged file_name [narrow down]
+->git diff HEAD file_name1 [specific file]
+->git diff HEAD file_name1 file_name2]
+->difference between branch
+->git diff master new_branch
+->git diff master..new_branch [same as previous]
+->git diff commit1..commit2 [difference in commits]
+
+git stash:-
+1.To add staged or unstaged changes in stash but did not commit them.
+2.git stash [sometimes latter on]
+3.git stash pop [pop out most resent stash]
+4.git stash
+5.git checkout master
+6.git stash apply
+7.stash are in stack [keep order]
+8.git stash list
+9.git stash apply stash@{2}
+10.git stash drop stash@{2} [drop a particular stash]
+11.git stash list [liating all stash]
+11.git stash clear [clear all stash]
+
+Undoing Changes and Tie Travelling:-
+1.git checkout 4f1bce4(hash) [Time travelling HEAD points at that commit]
+2.cat .git/HEAD
+3.git switch master
+4.git checkout commit-hash
+5.git switch -c my_new_branch
+6.git checkout HEAD~2
+7.git checkout HEAD cat.txt dog.txt
+8.git checkout -- cat.txt dog.txt
+
+Git Restore:-
+1.git restore dog.txt
+2.git restore --source HEAD~2 dog.txt
+3.git restore dog.txt
+4.git restore --staged file_name
+
+Git Reset:-
+1.git reset hash_value [removes commits but takes work in working directory]
+2.git reset --hard 6hdw68f [removes commit and reset work]
+3.git revert hash_value [does not removes commit , create a new commit with previous code]
+
+GitHub:-
+1.git clone url
+2.git remote -v
+3.git remote add origin url
+4.git push <remote> <branch>
+5.git push origin main
+6.git branch -M main
+7.git push -u origin main
+8.git push origin main
+9.git push origin branch_name
+10.git push <remote> <local-branch> : <remote-branch>
+11.git push -u origin branch_name [u for upsteram remember local : remote]
+
+Fetching and Pulling:-
+1.master vs origin/master
+2.git branch -r
+3.git checkout origin/main
+4.git switch main
+5.git push origin main
+6.git branch -r
+7.git checkout origin/food
+8.git switch movies
+9.git status
+10.git switch phone
+11.git push origin phone
+12.git fetch <remote> [fetching changes from remote repo to local repo, not in working directory]
+13.git fetch <remote> branch
+14.git fetch origin master
+15.git pull = git fetch + git merge
+16.git pull origin master
+17.git pull <remote> <branch>
+18.git pull origin food
+19.Pulls can result in merge conflicts
+20.git pull origin food [merge conflict->fix merge conflict]
+21.git push origin food
+
+Git Collaboration Workflows:-
+1.Centralized Workflow
+2.Feature Branches
+3.Pull Request [not git command, github feature]
+4.Forking
+5.main project-->fork-->clone to local machine-->do some work-->
+pull upstream main-->push to remote repo->crete pull request
+6.git pull upstream main
+
+Rebasing:-
+1.git branch feat
+2.git rebase master
+3.Rebase only your commits in feature branch
+4.History of feature branch will rewriten
+5.rebase conflict
+6.git rebase --continue
+
+Interactive Rebase:-
+1.Rewriting history
+2.git switch -c my-feat
+3.git rebase -i HEAD~9
+4.fixup commits, reword commits, drop commits
+5.git commit --amend [amend most recent commit]
+6.git rebase -i HEAD~2
+
+Git Tags:-
+1.Master branch, different branch, Merging branches with Master Branch->give tags
+2.lightweight tags, annotated tags
+3.Versioning
+4.Semantic Versioning [Major Release.Minor Release.Patch Release] (2.4.1)
+5.Initial Release ->1.0.0
+6.Patch Release->1.0.1
+7.Minor Release->1.1.0
+
+Viewing Tags:-
+1.git tag
+2.git tag -l
+3.git tag -l "v17*"
+4.git tag -l "*beta*"
+5.git checkout tag
+6.git checkout 15.3.1
+7.git diff v17.0.0 v17.0.1
+8.do some work
+9.git commit -am "some commit message"
+10.git tag v17.0.2 [light weight tag]
+11.git log --oneline
+12.git tag -a v17.1.0
+13.git show v17.1.0
+14.git log --oneline
+15.git tag mytag commit_hash
+16.git tag tag_name commit_hash -f [forcefully move tag to a commit]
+18.git log --oneline
+19.git tag deleteme
+20.git tag -d deleteme [delete tags]
+
+Pushing tags:-
+1.git push origin master [cannot see ant tags]
+2.git push origin my_tag [push one tag]
+3.git push colt --tags   [push all tags]
+
+Custom Git Alises:-
+1.git config --global user.name
+2.git config --global user.email
+3.cat ~/.gitconfig
+4.git config --global user.name "Soumyajit7615"
+5.git config --global user.email "soumyajit7615@gmail.com"
+6.Alias
+[alias]
+	s=status
+	l=log
+	cm = commit -m
+	a=add
+7.git config --global alias.showmebranches branch
+8.git showmebranches
+
+Git Insight:-[tree,commit,blob,head]
+1.ls -a
+2.config file
+3.git is a key-value datastore
+4.git "hi" | git hash-object --stdin [hash value SHA1]
+5.git "hello" | git hash-object --stdin -w [write hash value]
+6.git cat-file -p <hash value> [retrive normal file from hash value]
+7.blob ->binary large object
+8.git cat-file -p master^{tree}
+
+Reflogs:-
+1.git reflog show head
+2.git checkout HEAD~2
+3.git reflog show HEAD
+4.git reflog show HEAD@{10}
+
+Github More:-
+1.Public vs Private Repo
+2.Collaboration [clone pull push]
+3.README.md File
+4.Github Gists
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
