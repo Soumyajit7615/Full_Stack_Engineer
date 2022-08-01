@@ -1,0 +1,4 @@
+services.AddControllersWithViews();
+services.AddCors(o => o.AddPolicy("AllowMyOrigin", builder => { builder.AllowAnyOrigin() .AllowAnyMethod() .AllowAnyHeader(); }));
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFyb24uaGF3a2luc0Bhb2wuY29tIiwidW5pcXVlX25hbWUiOiJBYXJvbmhhd2tpbnMiLCJuYmYiOjE2NTU5MTUwMDQsImV4cCI6MTY1NTkxODYwNCwiaWF0IjoxNjU1OTE1MDA0fQ.yPgSJZWAl8crqMQPU4oPkqvW0-RE9Trfuzpx0aNIqvc

@@ -1,0 +1,368 @@
+OcelotGateWayWebAPI
+-------------------------------------------------
+GenuineCustomerWebAPI
+======================================================
+ public class Customer
+    {
+        public int CutomerId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string CellNumber { get; set; }
+        public string Email { get; set; }
+
+    }
+
+=====================================================
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace GenuineCustomerApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GenuineCustomerController : ControllerBase
+    {
+        private static List<Customer> CustomerList = new List<Customer>()
+            {
+              new Customer(){CutomerId=1,FirstName="Aaron",LastName="Hawkins",CellNumber="(660) 663-4518",Email="aron.hawkins@aol.com" },
+              new Customer(){CutomerId=2,FirstName="Hedy",LastName="Greene",CellNumber="(608) 265-2215",Email="hedy.greene@aol.com" },
+              new Customer(){CutomerId=3,FirstName="Melvin",LastName="Porter",CellNumber="(959) 119-8364",Email="melvin.porter@aol.com"}
+            };
+
+        // GET: api/<GenuineCustomerController>
+        [HttpGet]
+        public IEnumerable<Customer> Get()
+        {
+
+            return CustomerList.ToList();
+        }
+        // GET api/<ComputerProductsController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            Customer customer = CustomerList.FirstOrDefault(c => c.CutomerId == id);
+            if (customer != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, customer);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+
+        }
+
+
+        // POST api/<GenuineCustomerApiController>
+        [HttpPost]
+        public IActionResult Post([FromBody] Customer customer)
+        {
+
+            Customer cust = new Customer();
+            if (customer != null)
+            {
+                cust = CustomerList.FirstOrDefault();
+                if (cust != null)
+                {
+                    int id = CustomerList.Max(c => c.CutomerId);
+                    customer.CutomerId = id + 1;
+                }
+
+                else
+                {
+                    customer.CutomerId = 1;
+                }
+
+
+                CustomerList.Add(customer);
+                return StatusCode(StatusCodes.Status201Created, customer);
+
+            }
+            else
+            {
+
+                //return BadRequest();
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        // PUT api/<GenuineCustomerApiController>/5
+
+        [HttpPut("{id}")]
+
+        public IActionResult Put(int id, [FromBody] Customer customer)
+        {
+            Customer cust = CustomerList.FirstOrDefault(c => c.CutomerId == id);
+            if (cust != null)
+            {
+                cust.FirstName = customer.FirstName;
+
+                cust.LastName = customer.LastName;
+                cust.CellNumber = customer.CellNumber;
+                cust.Email = customer.Email;
+
+                //return Ok();
+                return StatusCode(StatusCodes.Status201Created, customer);
+            }
+            else
+            {
+                return BadRequest();
+
+            }
+        }
+
+        // DELETE api/<GenuineCustomerApiController>/5
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            Customer cust = CustomerList.FirstOrDefault(c => c.CutomerId == id);
+            if (cust != null)
+            {
+                CustomerList.Remove(cust);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------
+ComputerProductsWebAPI
+------------------------------------------------------------------------------------------------
+public class Product
+    {
+        public int ProductCode { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+    }
+---------------------------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace ComputerProductsApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ComputerProductsController : ControllerBase
+    {
+        public static List<Product> ProductsList = new List<Product>()
+        {
+        new Product(){ ProductCode=1,ProductName="Speakers",ProductPrice=30000.00m},
+        new Product(){ ProductCode=2,ProductName="Desktops",ProductPrice=30000.00m},
+        new Product(){ ProductCode=3,ProductName="Laptops",ProductPrice=25000.00m},
+        new Product(){ ProductCode=4,ProductName="Gaming PC's",ProductPrice=60000.00m},
+        new Product(){ ProductCode=5,ProductName="Servers",ProductPrice=100000.00m},
+        new Product(){ ProductCode=6,ProductName="Tablet",ProductPrice=5000.00m},
+        new Product(){ ProductCode=7,ProductName="PC's Monitors",ProductPrice=5000.00m},
+        new Product(){ ProductCode=8,ProductName="Memory",ProductPrice=2500.00m},
+        new Product(){ ProductCode=9,ProductName="Printers",ProductPrice=4000.00m},
+        new Product(){ ProductCode=10,ProductName="Projectors",ProductPrice=30000.00m}
+        };
+
+
+
+        // GET: api/<ComputerProductsController>
+        [HttpGet]
+        public IEnumerable<Product> Get()
+        {
+            return ProductsList.ToList();
+        }
+
+        // GET api/<ComputerProductsController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            Product product = ProductsList.FirstOrDefault(p => p.ProductCode == id);
+            if (product != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, product);
+                
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+
+        }
+
+
+        // POST api/<ComputerProductsController>
+        [HttpPost]
+        public IActionResult Post([FromBody] Product product)
+        {
+            Product prod = new Product();
+            if (product != null)
+            {
+                prod = ProductsList.FirstOrDefault();
+                if (prod != null)
+                {
+                    int id = ProductsList.Max(p => p.ProductCode);
+                    product.ProductCode = id + 1;
+                }
+
+                else
+                {
+                    product.ProductCode = 1;
+                }
+
+
+                ProductsList.Add(product);
+                return StatusCode(StatusCodes.Status201Created, product);
+
+            }
+            else
+            {
+
+                //return BadRequest();
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+        }
+
+        // PUT api/<ComputerProductsController>/5
+        [HttpPut("{id}")]
+
+        public IActionResult Put(int id, [FromBody] Product product)
+        {
+            Product prod = ProductsList.FirstOrDefault(p => p.ProductCode == id);
+            if (prod != null)
+            {
+                prod.ProductName = product.ProductName;
+                prod.ProductPrice = product.ProductPrice;
+                //return Ok();
+                return StatusCode(StatusCodes.Status201Created, product);
+            }
+            else
+            {
+                return BadRequest();
+
+            }
+        }
+
+        // DELETE api/<ComputerProductsController>/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            Product prod = ProductsList.FirstOrDefault(p => p.ProductCode == id);
+            if (prod != null)
+            {
+                ProductsList.Remove(prod);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+    }
+}
+
+------------------------------------------------------------------------------------------------------
+CustomerCareServiceGatewayWebAPI
+----------------------------------------------------------------------------------------------------
+ocelot.json
+
+
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/ComputerProducts-service/{catchAll}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/ComputerProductsAdd-service/{catchAll}",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7002
+        }
+      ],
+      "UpstreamPathTemplate": "/GenuineCustomer-service/{catchAll}",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:7000"
+  }
+}
+------------------------------------------------------------------------------------------------------
+ public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+         Host.CreateDefaultBuilder(args)
+         .ConfigureAppConfiguration((host, config) =>
+         {
+             config.AddJsonFile("ocelot.json");
+         }).ConfigureWebHostDefaults(webBuilder =>
+         {
+             webBuilder.UseStartup<Startup>();
+         });
+    }
+--------------------------------------------------------------------------------------------
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
+
+ services.AddOcelot(Configuration);
+
+
+ await app.UseOcelot();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+1.git init
+2.git config --global user.name username
+3.git config --global user.email useremail
+4.touch Index.html
+5.touch About.html
+6.touch ContuctUs.html
+7.ls -lart
+8.clear
+9.dir
+10.git status
+11.code .
+12.cat index.html
+----------------------------------------------------------
+1.git add Index.html
+2.i-for insert
+3.:wq
+4.git add .
+5.git heckout Index.html
+6.git checkout -f
+7.git log -p -1
+8.git diff
+9.git diff --staged
+10.git add .
+11.git rm --cached waste.html
+12.git add .
+13.git status -s
+--------------------------------------------------------------
+1.touch .gitignore
+2.touch mylogs.log
+3.in .gitignore file write mylogs.log
+4.git status
+------------------------------------------------------------
+1.git branch test1
+2.git status
+3.git checkout test1
+4.git add .
+5.git commit -m "changes login in Home.html"
+6.
+

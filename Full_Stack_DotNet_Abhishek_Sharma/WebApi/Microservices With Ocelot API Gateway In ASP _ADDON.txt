@@ -1,0 +1,99 @@
+Create configuration.Json File under the Gateway.WebAPI to define the Routes which are necessary for Microservices.
+ 
+configuration.Json
+{  
+  "Routes": [  
+    {  
+      "DownstreamPathTemplate": "/api/product",  
+      "DownstreamScheme": "https",  
+      "DownstreamHostAndPorts": [  
+        {  
+          "Host": "localhost",  
+          "Port": 44337  
+        }  
+      ],  
+      "UpstreamPathTemplate": "/gateway/product",  
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]  
+    },  
+    {  
+      "DownstreamPathTemplate": "/api/product/{id}",  
+      "DownstreamScheme": "https",  
+      "DownstreamHostAndPorts": [  
+        {  
+          "Host": "localhost",  
+          "Port": 44337  
+        }  
+      ],  
+      "UpstreamPathTemplate": "/gateway/product/{id}",  
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]  
+    },  
+    {  
+      "DownstreamPathTemplate": "/api/customer",  
+      "DownstreamScheme": "https",  
+      "DownstreamHostAndPorts": [  
+        {  
+          "Host": "localhost",  
+          "Port": 44373  
+        }  
+      ],  
+      "UpstreamPathTemplate": "/gateway/customer",  
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]  
+    },  
+    {  
+      "DownstreamPathTemplate": "/api/customer/{id}",  
+      "DownstreamScheme": "https",  
+      "DownstreamHostAndPorts": [  
+        {  
+          "Host": "localhost",  
+          "Port": 44373  
+        }  
+      ],  
+      "UpstreamPathTemplate": "/gateway/customer/{id}",  
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]  
+    }  
+  ],  
+  "GlobalConfiguration": {  
+    "BaseUrl": "http://localhost:44382"  
+  }  
+  
+}  
+DownstreampathTemplate -  Defines the route of actual endpoint of Microservice
+ 
+DownstreamScheme - scheme of Microservice, HTTPS 
+ 
+DownstreamHostsandPorts - Host and Port of Microservice will define here.
+ 
+UpstreampathTemplate - The path at which the client will request the Ocelot API Gateway
+ 
+UpstreamHttpmethod - The Supported HTTP Methods to the API Gateway. Based on the incoming method,Ocelot sends a  similar HTTP method request to microservices as well.
+ 
+Let's test the application and this will run under the Gateway.WebAPI Port number which we already defined in the configuration.json file
+ 
+launchsettings.json (Gateway API)
+{  
+  "iisSettings": {  
+    "windowsAuthentication": false,   
+    "anonymousAuthentication": true,   
+    "iisExpress": {  
+      "applicationUrl": "http://localhost:51733",  
+      "sslPort": 44382  
+    }  
+  },  
+  "profiles": {  
+    "IIS Express": {  
+      "commandName": "IISExpress",  
+      "launchBrowser": true,  
+      "environmentVariables": {  
+        "ASPNETCORE_ENVIRONMENT": "Development"  
+      }  
+    },  
+    "Gateway.WebApi": {  
+      "commandName": "Project",  
+      "launchBrowser": true,  
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",  
+      "environmentVariables": {  
+        "ASPNETCORE_ENVIRONMENT": "Development"  
+      }  
+    }  
+  }  
+}  

@@ -1,0 +1,436 @@
+JWTbearerAuthenticationCoreWebAPI
+--------------------------------------------------------
+
+ public class Product
+    {
+        public int ProductCode { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+    }
+---------------------------------------------------------
+namespace JWTbearerAuthenticationCoreWebAPI.Model
+{
+    public class SecurityQuestion
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int SqId { get; set; }
+
+        [DisplayName("Select security question")]
+        [Required(ErrorMessage = "Security Question should not be blank")]
+        public string Question { get; set; }
+        public virtual ICollection<UserDetail> UserDetails { get; set; }
+    }
+}
+--------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace JWTbearerAuthenticationCoreWebAPI.Model
+{
+    public class UserType
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserTypeId { get; set; }
+
+        [DisplayName("User Type")]
+        [Required(ErrorMessage = "Login type should not be blank eg. Manager / User")]
+        [StringLength(30, MinimumLength = 5)]
+        public string UserTypeName { get; set; }
+
+        public virtual ICollection<UserDetail> UserDetails { get; set; }
+
+    }
+}
+----------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace JWTbearerAuthenticationCoreWebAPI.Model
+{
+    public class UserDetail
+    {
+
+        //[Required(ErrorMessage = "UserId should not be blank")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId { get; set; }
+
+        [ForeignKey("UserType")]
+        public int UserTypeId { get; set; }
+
+        [DisplayName("First Name")]
+        [StringLength(30, MinimumLength = 5)]//length
+        [Required(ErrorMessage = "First Name can`t be blank")]
+        public string FName { get; set; }
+
+        [DisplayName("Last Name")]
+        [StringLength(30, MinimumLength = 5)]//length
+        [Required(ErrorMessage = "Last Name can`t be blank")]
+        public string LName { get; set; }
+
+        [StringLength(30, MinimumLength = 8)]//length
+        [DisplayName("UserName")]
+        [Required(ErrorMessage = "User Name can`t be blank")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "Date of Birth can`t be blank")]
+        public DateTime Dob { get; set; }
+        //[StringLength(6, MinimumLength = 4)]//length
+
+        [Required(ErrorMessage = "Please select gender")]
+        public string Gender { get; set; }
+
+        [DisplayName("PhoneNumber")]
+        [RegularExpression("^[5-9][0-9]{9}$")]//check reg expression_
+        [Required(ErrorMessage = "Enter Correct Phone Number")]
+        public string PhoneNumber { get; set; }
+
+        [DisplayName("Email")]
+        [EmailAddress]
+        [Required(ErrorMessage = "Enail id can`t be blank")]
+        public string Email { get; set; }
+
+        [DisplayName("Password")]
+        [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")]
+        [Required(ErrorMessage = "Password can`t be blank")]
+        public string Password { get; set; }
+
+        [ForeignKey("SecurityQuestion")]
+        [Required(ErrorMessage = "Select Security Question")]
+        public int SqId { get; set; }
+
+        [StringLength(30, MinimumLength = 3)]
+        [DisplayName("Answer")]
+        [Required(ErrorMessage = "Security answer cannot be empty")]
+        public string SqAns { get; set; }
+              
+
+        public virtual SecurityQuestion SecurityQuestion { get; set; }
+        public virtual UserType UserType { get; set; }
+       
+    }
+}
+-----------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace JWTbearerAuthenticationCoreWebAPI.Model
+{
+    public class AppDBContext : DbContext
+    {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
+        {
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Seed();
+
+        }
+    
+        public DbSet<SecurityQuestion> SecurityQuestions { get; set; }
+        public DbSet<UserDetail> UserDetails { get; set; }
+        public DbSet<UserType> UserTypes { get; set; }
+    
+
+    }
+}
+-----------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace WebAPICoreJWTbearerAuthenticationService.Model
+{
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserDetail>().HasData(
+            new UserDetail() { UserId = 1, UserTypeId = 1, FName = "Aaron", LName = "Hawkins", UserName = "Aaronhawkins", Dob = DateTime.Now, Gender = "Male", PhoneNumber = "5123456789", Email = "aron.hawkins@aol.com", Password = "Arron@123", SqId = 7, SqAns = "Father" });
+
+            modelBuilder.Entity<UserType>().HasData(
+         new UserType() { UserTypeId = 1, UserTypeName = "Admin" },
+         new UserType() { UserTypeId = 2, UserTypeName = "Customer" },
+         new UserType() { UserTypeId = 3, UserTypeName = "Vendor" }
+         );
+            modelBuilder.Entity<SecurityQuestion>().HasData(
+            new SecurityQuestion() { SqId = 1, Question = "What is your mother's maiden name?" },
+            new SecurityQuestion() { SqId = 2, Question = "What is the name of your first pet?" },
+            new SecurityQuestion() { SqId = 3, Question = "What was your first car?" },
+            new SecurityQuestion() { SqId = 4, Question = "What elementary school did you attend?" },
+            new SecurityQuestion() { SqId = 5, Question = "What is the name of the town where you were born?" },
+            new SecurityQuestion() { SqId = 6, Question = "When you were young, what did you want to be when you grew up?" },
+            new SecurityQuestion() { SqId = 7, Question = "Who was your childhood hero?" },
+            new SecurityQuestion() { SqId = 8, Question = "Where was your best family vacation as a kid?" }
+            );
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------------
+appsetting.jsons
+ 
+"ConnectionStrings": {
+    "MyDBConnection": "Data Source=DESKTOP-BLC9DN3\\MSSQLSERVER1;Initial Catalog=JwtMicroServiceDB;Integrated Security=true;MultipleActiveResultSets=True;"
+------------------------------------------------------------------------------------------------------------------------------------------
+Startup.cs
+
+       services.AddDbContextPool<AppDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyDBConnection")));
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ public interface IJwtAuthenticationManager
+    {
+        string Authenticate(string email, string username, string password);
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
+
+namespace WebAPICoreJWTbearerAuthenticationService.Model
+{
+    public class JwtAuthenticationManager : IJwtAuthenticationManager
+    {
+        private readonly string Key;
+
+        public JwtAuthenticationManager(string Key)
+        {
+            this.Key = Key;
+        }
+
+
+
+        public string Authenticate(string email, string username, string password)
+        {
+          
+            var tokenHandler = new JwtSecurityTokenHandler();// install System.IdentityModel.Tokens.Jwt
+            var tokenKey = Encoding.ASCII.GetBytes(Key);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Name,username)
+                }
+                ),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature)
+
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+
+        }
+    }
+
+}
+---------------------------------------------------------------------------------------------------------------------
+Microsoft.AspNetCore.Authentication.JwtBearer
+---------------------------------------------------------------------------
+  "Jwt": {
+      "Key": "ThisismySecretKey",
+      "Issuer": "myconcept.com"
+    }
+-----------------------------------------------------------------------------------
+in Startup.cs File:
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+
+
+ var key = "This is my jwt authentication demo";
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+
+                };
+            });
+-------------------------------------------------------------------------------------------------------------------
+ //using Microsoft.Extensions.Configuration;
+
+            //Just for a reference having security key in appsetting file
+            //ValidIssuer = Configuration["Jwt:Issuer"],
+            //        ValidAudience = Configuration["Jwt:Issuer"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            //Refernece end
+-----------------------------------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using WebAPICoreJWTbearerAuthenticationService.Model;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace WebAPICoreJWTbearerAuthenticationService.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class JWTUserrAuthServiceController : ControllerBase
+    {
+        private readonly IJwtAuthenticationManager _jwtAuthenticationManager;
+
+        private readonly AppDBContext _context;
+        private IConfiguration _config;
+        public JWTUserrAuthServiceController(AppDBContext context, IConfiguration config, IJwtAuthenticationManager jwtAuthenticationManager)
+        {
+            _config = config;
+            _context = context;
+            _jwtAuthenticationManager = jwtAuthenticationManager;
+        }
+        public static List<Products> ProductsList = new List<Products>()
+        {
+        new Products(){ ProductCode=1,ProductName="Speakers",ProductPrice=30000.00m},
+        new Products(){ ProductCode=2,ProductName="Desktops",ProductPrice=30000.00m},
+        new Products(){ ProductCode=3,ProductName="Laptops",ProductPrice=25000.00m},
+        new Products(){ ProductCode=4,ProductName="Gaming PC's",ProductPrice=60000.00m},
+        new Products(){ ProductCode=5,ProductName="Servers",ProductPrice=100000.00m},
+        new Products(){ ProductCode=6,ProductName="Tablet",ProductPrice=5000.00m},
+        new Products(){ ProductCode=7,ProductName="PC's Monitors",ProductPrice=5000.00m},
+        new Products(){ ProductCode=8,ProductName="Memory",ProductPrice=2500.00m},
+        new Products(){ ProductCode=9,ProductName="Printers",ProductPrice=4000.00m},
+        new Products(){ ProductCode=10,ProductName="Projectors",ProductPrice=30000.00m}
+        };
+        [HttpGet]
+        public IEnumerable<Products> Get()
+        {
+            return ProductsList.ToList();    //new string[] { "value1", "value2" };
+        }
+
+
+        // GET api/<JWTCustomerCareServiceController>/5
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            Products product = ProductsList.FirstOrDefault(p => p.ProductCode == id);
+            if (product != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, product); // Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate(UserModel userModel)
+        {
+            var tokenString="";
+
+            if (!_context.UserDetails.Any(c => c.Email == userModel.Email && c.Password == userModel.Password))
+            {
+                tokenString = null;
+            }
+            else
+            {
+                UserDetail usrDetail = _context.UserDetails.FirstOrDefault(u => u.Email == userModel.Email && u.Password == userModel.Password);
+                tokenString = _jwtAuthenticationManager.Authenticate(usrDetail.Email, usrDetail.UserName, usrDetail.Password);
+            }
+
+            if (tokenString == null)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(new { token = tokenString });
+            }
+
+        }
+
+        // POST api/<JWTUserrAuthServiceController>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
+
+        // PUT api/<JWTUserrAuthServiceController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE api/<JWTUserrAuthServiceController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------
+ services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
+--------------------------------------------------------------------------------------------
+public class UserModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    } 
+-------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

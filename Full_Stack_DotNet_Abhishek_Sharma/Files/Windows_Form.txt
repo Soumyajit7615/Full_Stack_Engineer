@@ -1,0 +1,33 @@
+Form1.Designer.cs
+gacutil -i [internet]
+Form(Icon)
+1.Label(size, Name, Text, Enabled)
+2.TextBox(size, Name, TabIndex)
+3.Button(TabIndex, Text, Size, Name)->Double Click
+=>MessageBox.Show(txtName.Text)
+4.ComboBox(Collection, Name, )
+5.ComboBox(InMemory collection)
+6.ComboBox
+7.Label->TextBox->Button
+8.CheckBox(Name,Collection)
+9.RadioButton(Name, Text)
+10.TrackBar(Minimum, Maximum, Name)
+11.Add New Item ->Windows Form
+12.ProgressBar
+13.Timer(Interval, Enabled)
+
+
+ <td><B>From</B></td>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>7</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>11</td>
+                    <td>5</td>
+                    <td>19</td>
+                    <td>21</td>
+                    <td>2</td>
+                    <td>15</td>
+                    <td>12</td>
+                    <td>13</td>

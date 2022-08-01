@@ -1,0 +1,327 @@
+*****************1_ApiAuthAndRegService
+----------------------------------------Admin_1
+public class Admin
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required(ErrorMessage = "AdminId should not be blank")]
+        [Display(Name = "AdminId")] 
+        public int AdminId { get; set; }
+        
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "Password should not be blank")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+
+----------------------------------------SecurityQuestion_2
+ public class SecurityQuestion
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Security Question")]
+        public int QuId { get; set; }
+
+        [DisplayName("Select security question")]
+        [Required(ErrorMessage = "Security Question should not be blank")]
+
+        public string Question { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+        
+
+
+    }
+----------------------------------------RoleType_3
+public class RoleType
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Role Id")]
+        public int RoleId { get; set; }
+        [Display(Name = "Role Type")]
+        public string Role { get; set; }
+
+        public virtual ICollection<User> Users {get; set;}
+    }
+
+
+----------------------------------------User_4
+
+ public class User
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "User Id")]
+        public int UserId { get; set; }
+
+        [DisplayName("First Name")]
+        [StringLength(50)]
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Please Enter Name e.g. Hawkins")]
+        [DisplayName("Last Name")]
+        [StringLength(50)]
+        public string LastName { get; set; }
+
+        [Display(Name = "Date of Birth")]
+        public DateTime DOB { get; set; }
+
+        [Display(Name = "Gender")]
+        public string Gender { get; set; }
+
+        [Display(Name = "Contact Number")]
+        //[RegularExpression(@"^\([0-9]{3}\) [1-9]{3}-[1-9]{4}$")]
+        [Required(ErrorMessage = "Phone number should not be blank eg. (372) 587-2335")]
+        [MaxLength(10, ErrorMessage = "Phone number should be of 10 digit")]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Please enter valid  10 digit number")]
+        public string Contact_Number { get; set; }
+
+
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Enter Email Address")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        
+        [Required(ErrorMessage = "Password should not be blank")]
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Atleat 1 Lowercase, Atleast 1 uppercase, Atleat 1 numeric digit,Atleast 1 special character(@,$,!,%,) Minimum size should be 8")]
+        [Display(Name = "Password")]
+
+        public string Password { get; set; }
+
+        [Display(Name = "Role")]
+        [ForeignKey("RoleType")]
+        public int RoleId { get; set; }
+       // [ForeignKey("UserSt")]
+        [Display(Name = "User Status")]
+        public string UserStatus { get; set; }
+
+        [Display(Name = "Security Question Id")]
+        [ForeignKey("SecurityQuestion")]
+        public int SqId { get; set; }
+        [Display(Name = "Answer")]
+
+        public string Answer { get; set; }
+
+        public virtual SecurityQuestion SecurityQuestion { get; set; }
+      //  public virtual UserSt UserSt { get; set; }
+        public virtual RoleType RoleType { get; set; }
+        public virtual ICollection<Claim> Claims { get; set; }
+        public virtual ICollection<Policy> Policies { get; set; }
+
+       public virtual ICollection<Help> Helps { get; set; }
+
+        public virtual ICollection<UserData> UserDatas { get; set; }
+
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
+
+
+    }
+
+----------------------------------------UserData_5
+
+ public class UserData
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "user Data Id")]
+        public int UDataId { get; set; }
+
+        [Display(Name = "User Id")]
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+
+        [Display(Name = "Document Id")]
+        [ForeignKey("Identification")]
+        public int Id { get; set; }
+
+        [Display(Name = "Policy Document")]
+        public string PolicyDocument { get; set; }
+       
+        [Display(Name = "Bill")]
+        public long Bill { get; set; }
+        public virtual Identification Identification { get; set; }
+        public virtual User User { get; set; }
+
+    }
+----------------------------------------Identification_6
+
+public class Identification
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Id")]
+        public int Id { get; set; }
+
+        [Display(Name = "Id Type")]
+        public string IdType { get; set; }
+
+        [Display(Name = "ID Number")]
+        public string IdValue { get; set; }
+        public virtual ICollection<UserData> UserDatas { get; set; }
+
+
+    }
+
+*****************2_ApiPolicyAndClaimsService
+----------------------------------------Policy_7
+public class Policy
+    {
+        [Required]
+        [Key]
+        [Display(Name = "Policy Id")]
+        public int PolicyId { get; set; }
+        [Display(Name = "User Id")]
+        [Required]
+       // [ForeignKey("User")]
+        public int UserId { get; set; }
+        [Display(Name = "Type Of Claim")]
+        [Required]
+        public string TypeOfClaim { get; set; }
+
+        [Required]
+        [Display(Name = "Code")]
+        [ForeignKey("Plan")]
+        public int Code { get; set; }
+
+        [Required]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+        [Display(Name = "End Date ")]
+        [Required]
+        public DateTime EndDate { get; set; }
+        //public virtual User User { get; set; }
+        public virtual Plan Plan { get; set; }
+        public virtual ICollection<Claim> Claims { get; set; }
+    }
+
+----------------------------------------Plan
+public class Plan
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Code")]
+
+        public int Code { get; set; }
+
+        [Display(Name = "Durations in Years")]
+        public int DurationInMonths {get; set; }
+        public virtual ICollection<Policy> Policies { get; set; }
+
+    }
+----------------------------------------Claim_8
+
+ public class Claim
+    {
+
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Claim Id")]
+        public int ClaimId { get; set; }
+        [Required]
+        [Display(Name = "User Id")]
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+
+        [Required]
+        [Display(Name = "Types Of Claim")]
+        public string TypeOfClaim { get; set; }
+        [Required]
+        [Display(Name = "Policy Id")]
+        [ForeignKey("Policy")]
+        public int PolicyId { get; set; }
+        [Required]
+        [Display(Name = "Amount")]
+        public int Amount { get; set; }
+        [Display(Name = "Description")]
+        [Required(ErrorMessage = "Select status")]
+
+        [ForeignKey("Status")]
+        public int statusID { get; set; }
+        public virtual User User { get; set; }
+        public virtual Policy Policy { get; set; }
+        public virtual Status Status { get; set; }
+       
+        public virtual ICollection<Notification> Notifications { get; set; }
+
+    }
+
+
+----------------------------------------Status_9
+public class Status
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int statusID { get; set; }
+
+        [DisplayName("Status")]
+        [Required(ErrorMessage = "Status required")]
+        public string StatusName { get; set; }
+
+        public virtual ICollection<Claim> Claims { get; set; }
+        public virtual ICollection<Help> Helps { get; set; }
+
+    }
+----------------------------------------Notification_10
+
+ public class Notification
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Notification Id")]
+        public int NotifyId { get; set; }
+        [Display(Name = "Claims Id")]
+        [Required]
+        [ForeignKey("Claim")]
+        public int ClaimId { get; set; }
+        [Display(Name = "Dates")]
+        public DateTime Date { get; set; }
+
+        public virtual Claim Claim { get; set; }
+    }
+
+
+*****************3_ApiHelpAndFeedBackService
+
+----------------------------------------Help_11
+
+public class Help
+    {
+        [Key]
+        [Display(Name = "Help Id")]
+        public int HelpId { get; set; }
+
+        [Display(Name = "User Id")]
+        [ForeignKey("User")]
+        [Required]
+        public int UserId { get; set; }
+
+        [Display(Name = "Issue")]
+        [Required]
+        public string Issue { get; set; }
+
+        [Display(Name = "Description")]
+        [Required]
+        public string Description{ get; set; }
+
+        [Display(Name = "Description")]
+        [Required(ErrorMessage = "Select status")]
+
+        [ForeignKey("Status")]
+        public int statusID { get; set; }
+
+        public virtual Status Status { get; set; }
+        public virtual User User { get; set; }
+
+    }
+
+----------------------------------------Question_12
+ public class Question
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "Question Id")]
+        public int QId { get; set; }
+        [Display(Name = "Question")]
+        public string Quest { get; set; }
+       
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
+
+    }
+
+
+
+
+
+
+

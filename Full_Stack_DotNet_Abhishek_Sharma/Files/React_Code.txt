@@ -1,0 +1,651 @@
+import React from "react";
+
+const Home = () => {
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>Home Page</h1>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+
+
+import React from "react";
+
+const Contact = () => {
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>Contact Page</h1>
+      </div>
+    </div>
+  );
+};
+
+export default Contact;
+
+
+NotFound.js
+
+import React from "react";
+const NotFound = () => {
+  return (
+    <div>
+      <h1 className="display-1">Page Not Found</h1>
+    </div>
+  );
+};
+export default NotFound;
+
+
+<Route component={NotFound}/>
+
+
+{
+  "users": <paste here>
+}
+
+
+"json-server": "json-server --watch db.json --port 3003",
+
+npm run json-server
+
+import React from "react";
+
+const About = () => {
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>About Page</h1>
+      </div>
+    </div>
+  );
+};
+
+export default About;
+
+
+import React from "react";
+
+const Navbar = () => {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-info">
+      <div className="container">
+        <a className="navbar-brand" href="/">
+          React User
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a className="nav-link active" href="/">
+                Home
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                About
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Contact
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
+export default Navbar;
+
+
+
+npm i react-router
+npm install react-router-dom
+npm i react-router-dom@5.3.0
+
+  
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/about" component={About}/>
+          <Route exact path="/Contact" component={Contact}/>
+        </Switch>
+      
+      </div>
+    </Router>
+  );
+}
+----------------------------------------------------------
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+
+const Navbar = () => {
+  return (
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
+        <NavLink className="navbar-brand" to="/">
+          React User
+        </NavLink>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse">
+          <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink className="nav-link" exact to="/">
+                Home
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" exact to="/about">
+                About
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" exact to="/contact">
+                Contact
+              </NavLink>
+            </li>
+          </ul>
+          <form className="d-flex">
+            <NavLink className="btn btn-outline-light" exact to="/users/add">
+              Add User
+            </NavLink>
+          </form>
+        </div>
+      </div>
+    </nav>
+  );
+};
+export default Navbar;
+--------------------
+About page
+<aside className="lead text-justify">
+----------------------
+Contact Us Page
+
+import React from "react";
+
+const Contact = () => {
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>Contact Page</h1>
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input
+              type="email"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              placeholder="Enter email"
+            />
+            <small id="emailHelp" class="form-text text-muted">
+              We'll never share your email with anyone else.
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="exampleInputPassword1"
+              placeholder="Password"
+            />
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="exampleCheck1"
+            />
+            <label class="form-check-label" for="exampleCheck1">
+              Check me out
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Contact;
+----------------------------------
+"start:dev": "concurrently \"npm start\" \"npm run json-server\"",
+
+-------------------------
+Home Page 
+
+import React,{useState,useEffect} from "react";
+import axios from "axios";
+
+const Home = () => {
+const [users,setUser] = useState([]);
+useEffect(()=>{
+  loadUsers();
+},[]);
+const loadUsers = async ()=>{
+  const result = await axios.get("http://localhost:3003/users");
+  console.log(result);
+};
+
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>Home Page</h1>
+      </div>
+    </div>
+  );
+};
+
+
+
+---------------------------------------------
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+const Home = () => {
+  const [users, setUser] = useState([]);
+  useEffect(() => {
+    loadUsers();
+  }, []);
+  const loadUsers = async () => {
+    const result = await axios.get("http://localhost:3003/users");
+    setUser(result.data);
+  };
+
+  return (
+    <div className="container">
+      <div className="py-4">
+        <h1>Home Page</h1>
+        <table class="table border shadow">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">User Name</th>
+              <th scope="col">Email</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              users.map((user,index)=>(
+               <tr><th scope="row">{index+1}</th>
+                <td>{user.name}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>
+                  <Link class="btn btn-primary mr-2">View</Link>
+                  <Link class="btn btn-outline-primary mr-2">Edit</Link>
+                  <Link class="btn btn-danger">Delete</Link>
+                </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+
+
+export default Home;
+---------------------------------------
+AddUser.js
+
+import React from "react";
+
+export const AddUser = () => {
+  return (
+    <div className="container">
+      <div className="w-75 mx-auto shadow p-5">
+        <h2 className="text-center mb-4">Add A User</h2>
+        <form>
+        <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Name"
+              name="name"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Username"
+              name="username"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              className="form-control form-control-lg"
+              placeholder="Enter your E-mail Address"
+              name="email"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Phone Number"
+              name="phone"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Website Name"
+              name="website"
+            />
+          </div>
+          <button className="btn btn-primary btn-block">Add User</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+---------------------------------------------------------
+import React, { useState } from "react";
+import axios, { Axios } from "axios";
+import { useHistory } from "react-router-dom";
+
+export const AddUser = () => {
+  let history = useHistory();
+    const [user, setUser] = useState({
+    name: "",
+    username: "",
+    email: "",
+    phone: "",
+    website: "",
+  });
+
+  const { name, username, email, phone, website } = user;
+  const onInputChange = (e) => {
+    //console.log(e.target.value);
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+  const onSubmit = async e =>{
+      e.preventDefault();
+      await axios.post("http://localhost:3003/users",user);
+      history.push("/");
+  }
+  return (
+    <div className="container">
+      <div className="w-75 mx-auto shadow p-5">
+        <h2 className="text-center mb-4">Add A User</h2>
+        <form onSubmit={e=> onSubmit(e)}>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Name"
+              name="name"
+              value={name}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Username"
+              name="username"
+              value={username}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              className="form-control form-control-lg"
+              placeholder="Enter your E-mail Address"
+              name="email"
+              value={email}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Phone Number"
+              name="phone"
+              value={phone}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Website Name"
+              name="website"
+              value={website}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <button className="btn btn-primary btn-block">Add User</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+-----------------------------------
+ const loadUsers = async () => {
+    const result = await axios.get("http://localhost:3003/users");
+    setUser(result.data.reverse());
+  };
+----------------------------------------------------
+EditUser.js
+import React, { useEffect, useState } from "react";
+import axios, { Axios } from "axios";
+import { useHistory,useParams } from "react-router-dom";
+
+export const EditUser = () => {
+  let history = useHistory();
+  const {id} = useParams();
+    const [user, setUser] = useState({
+    name: "",
+    username: "",
+    email: "",
+    phone: "",
+    website: "",
+  });
+
+  const { name, username, email, phone, website } = user;
+  const onInputChange = (e) => {
+    //console.log(e.target.value);
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+  useEffect(()=>{
+      loadUser();
+        },[]);
+  const onSubmit = async e =>{
+      e.preventDefault();
+      await axios.put(`http://localhost:3003/users/${id}`,user);
+      history.push("/");
+  }
+  const loadUser = async()=>{
+      const result = await axios.get(`http://localhost:3003/users/${id}`)
+  setUser(result.data);
+    }
+  return (
+    <div className="container">
+      <div className="w-75 mx-auto shadow p-5">
+        <h2 className="text-center mb-4">Edit A User</h2>
+        <form onSubmit={e=> onSubmit(e)}>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Name"
+              name="name"
+              value={name}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Username"
+              name="username"
+              value={username}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              className="form-control form-control-lg"
+              placeholder="Enter your E-mail Address"
+              name="email"
+              value={email}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Phone Number"
+              name="phone"
+              value={phone}
+              onChange={(e) => onInputChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Enter your Website Name"
+              name="website"
+              value={website}
+              onChange={(e) => onInputChange(e)}
+            />
+ </div>
+          <button className="btn btn-warning btn-block">Update User</button>
+        </form>
+      </div>
+    </div>
+
+  );
+};
+----------------------------------------------------------------------
+Home.js
+ <Link class="btn btn-primary mr-2">View</Link>
+ <Link class="btn btn-outline-primary mr-2" exact 
+to={`/users/edit/${user.id}`}>
+Edit</Link>
+<Link class="btn btn-danger">Delete</Link>
+App.js
+ <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/about" component={About}/>
+          <Route exact path="/contact" component={Contact}/>
+          <Route exact path="/users/add" component={AddUser}/>
+          <Route exact path="/users/edit/:id" component={EditUser}/>
+          <Route component={NotFound}/>
+  </Switch>
+----------------------------------------------------------------------------------
+const deleteUser = async id => {
+    //console.log(`${id}`);
+    await axios.delete(`http://localhost:3003/users/${id}`);
+    loadUsers();
+  };  
+
+
+<Link
+                    class="btn btn-danger"
+                    onClick={() => deleteUser(user.id)}> 
+                    Delete
+                  </Link>
+-----------------------------------------------------------------------------
+DetailsUser
+
+<Route exact path="/users/:id" component={DetailsUser}/>
+-------------------------------------------------------------------------
+import React, { useEffect, useState } from "react";
+import axios, { Axios } from "axios";
+import { useHistory, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+export const DetailsUser = () => {
+  const [user, setUser] = useState({
+    name: "",
+    username: "",
+    email: "",
+    phone: "",
+    website: "",
+  });
+  const { id } = useParams();
+  useEffect(() => {
+    loadUser();
+  }, []);
+  const loadUser = async () => {
+    const result = await axios.get(`http://localhost:3003/users/${id}`);
+    setUser(result.data);
+  };
+  return (
+    <div className="container py-4">
+      <Link className="btn btn-primary" to="/">
+        back to Home
+      </Link>
+      <h1 className="display-4">User Id :{id}</h1>
+      <hr />
+      <ul className="list-group w-50">
+        <li className="list-group-item">name: {user.name}</li>
+        <li className="list-group-item">username: {user.username}</li>
+        <li className="list-group-item">email: {user.email}</li>
+        <li className="list-group-item">phone: {user.phone}</li>
+        <li className="list-group-item">website: {user.website}</li>
+      </ul>
+    </div>
+  );
+};
+---------------------------------------------------------------------------------
+
+

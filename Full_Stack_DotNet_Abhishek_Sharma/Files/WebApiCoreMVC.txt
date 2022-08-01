@@ -1,0 +1,306 @@
+AspMvcCoreWebAPICfDemo
+----------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aspmvccorewebapiefcfdemo.Models
+{
+    public class Products
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ProductCode { get; set; }
+        [Required(ErrorMessage = "Product name should not be blank")]
+        public string ProductName { get; set; }
+        [Required(ErrorMessage = "Product price should not be blank")]
+        public decimal ProductPrice { get; set; }
+    }
+}
+---------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace aspmvccorewebapiefcfdemo.Models
+{
+    public class AppDBContext : DbContext
+    {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Seed();
+        }
+        public DbSet<Products> Products { get; set; }
+
+
+    }
+}
+--------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace aspmvccorewebapiefcfdemo.Models
+{
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Products>().HasData(
+                new Products() { ProductCode = 101, ProductName = "Speakers", ProductPrice = 30000.00m },
+         new Products() { ProductCode = 102, ProductName = "Desktops", ProductPrice = 30000.00m },
+         new Products() { ProductCode = 103, ProductName = "Laptops", ProductPrice = 25000.00m },
+         new Products() { ProductCode = 104, ProductName = "Gaming PC's", ProductPrice = 60000.00m },
+         new Products() { ProductCode = 105, ProductName = "Servers", ProductPrice = 100000.00m },
+         new Products() { ProductCode = 106, ProductName = "Tablet", ProductPrice = 5000.00m },
+         new Products() { ProductCode = 107, ProductName = "PC's Monitors", ProductPrice = 5000.00m },
+         new Products() { ProductCode = 108, ProductName = "Memory", ProductPrice = 2500.00m },
+         new Products() { ProductCode = 109, ProductName = "Printers", ProductPrice = 4000.00m },
+         new Products() { ProductCode = 110, ProductName = "Projectors", ProductPrice = 30000.00m }
+         );
+        }
+    }
+}
+--------------------------------------------------------------------------------
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "MyDBConnection": "Data Source=DESKTOP-BLC9DN3\\MSSQLSERVER1;Initial Catalog=CTSDBADM21DF010;Integrated Security=true;MultipleActiveResultSets=True;"
+  }
+}
+---------------------------------------------------------------------------
+
+  services.AddDbContextPool<AppDBContext>(
+
+                options => options.UseSqlServer(Configuration.GetConnectionString("MyDBConnection")));
+---------------------------------------------------------------------------------
+
+
+Enable-Migrations:
+Enables the migration in your project by creating a Configuration class.
+Add-Migration:  eg. Add-Migration 'InitializeMigration'
+
+Creates a new migration class as per specified name with the Up() and Down() methods.
+Update-Database:
+Executes the last migration file created by the Add-Migration command and applies changes to the database schema.
+
+Scaffold-DbContext "Data Source=DESKTOP-BLC9DN3\MSSQLSERVER1;Initial Catalog=MVCEFOnlineMartDB;Integrated Security=true;MultipleActiveResultSets=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+
+dotnet
+where dotnet
+dotnet --version
+dotnet --info
+
+dotnet new console --framework net5.0
+----------------------------------------------------------------
+ASPMvcClientConsumeWEBApiDemo
+----------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aspmvcclientefwebapidemo.Models
+{
+    public class Product
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ProductCode { get; set; }
+        [Required(ErrorMessage = "Product name should not be blank")]
+        public string ProductName { get; set; }
+        [Required(ErrorMessage = "Product price should not be blank")]
+        public decimal ProductPrice { get; set; }
+    }
+}
+----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aspmvcclientefwebapidemo.Models
+{
+    public class Product
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ProductCode { get; set; }
+        [Required(ErrorMessage = "Product name should not be blank")]
+        public string ProductName { get; set; }
+        [Required(ErrorMessage = "Product price should not be blank")]
+        public decimal ProductPrice { get; set; }
+    }
+}
+----------------------------------------------------------------
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using aspmvcclientefwebapidemo.Models;
+using System.Net.Http;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Newtonsoft.Json;
+using System.Net.Http.Json;
+
+namespace aspmvcclientefwebapidemo.Controllers
+{
+    public class ComputerProductsController : Controller
+    {
+         
+        // GET: ComputerProductsController
+        
+        public async Task<IActionResult> Index()
+        {
+            List<Product> products = new List<Product>();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            HttpResponseMessage response = await client.GetAsync("api/Products");
+            if (response.IsSuccessStatusCode)
+            {
+                var results = response.Content.ReadAsStringAsync().Result;
+                products = JsonConvert.DeserializeObject<List<Product>>(results);
+            }
+
+            return View(products);
+        }
+
+        // GET: ComputerProductsController/Details/5
+        
+        public async Task<IActionResult> Details(int id)
+        {
+            Product product = new Product();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            HttpResponseMessage response = await client.GetAsync($"api/Products/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                product = JsonConvert.DeserializeObject<Product>(result);
+            }
+
+            return View(product);
+        }
+
+        // GET: ComputerProductsController/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: ComputerProductsController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Product product)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            var response = await client.PostAsJsonAsync("api/Products", product);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+
+        }
+
+        // GET: ComputerProductsController/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            Product product = new Product();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            HttpResponseMessage response = await client.GetAsync($"api/Products/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                product = JsonConvert.DeserializeObject<Product>(result);
+            }
+
+            return View(product);
+        }
+
+        // POST: ComputerProductsController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Product product)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            var response = await client.PutAsJsonAsync($"api/Products/{product.ProductCode}", product);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            
+                return View();
+            
+        }
+
+        // GET: ComputerProductsController/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            Product product = new Product();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            HttpResponseMessage response = await client.GetAsync($"api/Products/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                product = JsonConvert.DeserializeObject<Product>(result);
+            }
+
+            return View(product);
+        }
+
+        // POST: ComputerProductsController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
+        {
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:28814/");
+            HttpResponseMessage response = await client.DeleteAsync($"api/Products/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+    }
+}
+-----------------------------------------------------------------------
+

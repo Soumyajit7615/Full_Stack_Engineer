@@ -1,0 +1,64 @@
+https://docs.microsoft.com/en-us/dotnet/architecture/containerized-lifecycle/design-develop-containerized-apps/build-aspnet-core-applications-linux-containers-aks-kubernetes
+
+
+version: '3.4'
+
+services:
+  authenticationservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "51080:80"
+      - "51443:443"
+
+  catalogservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "50080:80"
+      - "50443:443"
+
+----------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authenticationservice
+  labels:
+    app: authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: authenticationservice
+  template:
+    metadata:
+      labels:
+        app: authentication-service
+        service: authenticationservice
+    spec:
+      containers:
+        - name: authenticationservice
+          image: exploredockeracr.azurecr.io/authenticationservice:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authenticationservice
+  labels:
+    app: authentication-service
+    service: authenticationservice
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: LoadBalancer
+  selector:
+    service: authenticationservice

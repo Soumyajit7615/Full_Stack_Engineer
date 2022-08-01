@@ -1,0 +1,143 @@
+ExperiencePostCoreWebApi
+--------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ExperiencePostCoreWebApi.Models
+{
+    public class Employee
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int EmpID { get; set; }
+
+        [DisplayName("First Name")]
+        [Required(ErrorMessage = "Please Enter First Name e.g. John")]
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Please Enter Last Name e.g. Doe")]
+        [DisplayName("Last Name")]
+        public string LastName { get; set; }
+        [Required(ErrorMessage = "Password should not be blank")]
+        [PasswordPropertyText]
+        public string Password { get; set; }
+
+        [DisplayName("Cell Number")]
+        [Required(ErrorMessage = "Cell Number should not be blank")]
+        public string CellNumber { get; set; }
+
+        [EmailAddress]
+        [Required(ErrorMessage = "Enter valid email address")]
+        public string Email { get; set; }
+
+        [DisplayName("Profile Picture")]
+        [Required(ErrorMessage = "Profile Picture should not be blank")]
+        public string ProfilePicture { get; set; }
+
+        public virtual ICollection<Skill> Skills { get; set; }
+    }
+}
+
+
+-------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EFCoreRepositoryPatternDemo.Models
+{
+    public class ClsSkill
+    {
+        public ClsSkill()
+        {
+
+        }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int SkillId { get; set; }
+        [ForeignKey("ClsEmployee")]
+        public int EmpID { get; set; }
+        [DisplayName("Skill Name")]
+        [Required(ErrorMessage = "Skill name should not be blank")]
+        public string SkillName { get; set; }
+        [Required(ErrorMessage = "Employee Role should not be blank")]
+        [DisplayName("Role")]
+        public string Role { get; set; }
+        [DisplayName("Experience In Years")]
+        [Required(ErrorMessage = "Experience in years should not be blank")]
+        public int ExperienceInYears { get; set; }
+        public virtual ClsEmployee ClsEmployee { get; set; }
+
+    }
+}
+---------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFCoreRepositoryPatternDemo.Models
+{
+    public class AppDBContext : DbContext
+    {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
+        {
+
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Seed();
+        }
+        public DbSet<ClsEmployee> CoreEmployees { get; set; }
+        public DbSet<ClsSkill> CoreSkills { get; set; }
+
+    }
+}
+-----------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFCoreRepositoryPatternDemo.Models
+{
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ClsEmployee>().HasData(
+                 new ClsEmployee { EmpID = 1, FirstName = "Aaron", LastName = "Hawkins", Password = "arron@123", CellNumber = "(660) 663-4518", Email = "aron.hawkins@aol.com" },
+                 new ClsEmployee { EmpID = 2, FirstName = "Hedy", LastName = "Greene", Password = "hedy@123", CellNumber = "(608) 265-2215", Email = "hedy.greene@aol.com" },
+                 new ClsEmployee { EmpID = 3, FirstName = "Melvin", LastName = "Porter", Password = "melvin@123", CellNumber = "(959) 119-8364", Email = "melvin.porter@aol.com" }
+             );
+            modelBuilder.Entity<ClsSkill>().HasData(
+            new ClsSkill { SkillId = 1, EmpID = 1, SkillName = "Microsoft Office Suite", Role = "Business Analyst", ExperienceInYears = 2 },
+            new ClsSkill { SkillId = 2, EmpID = 1, SkillName = "Testing", Role = "Developer", ExperienceInYears = 3 },
+            new ClsSkill { SkillId = 3, EmpID = 1, SkillName = "Stakeholder Management", Role = "Project Lead", ExperienceInYears = 4 }
+           );
+        }
+    }
+}
+
+------------------------------------------------------------------------------------------
+app.json
+
+"ConnectionStrings": {
+    "MyDBConnection": "Data Source=DESKTOP-BLC9DN3\\MSSQLSERVER1;Initial Catalog=SEEDDATABASEDFS001;Integrated Security=true;MultipleActiveResultSets=True;"
+------------------------------------------------------------------------------------------
+StartUp.cs
+    
+        services.AddDbContextPool<AppDBContext>(
+
+              options => options.UseSqlServer(Configuration.GetConnectionString("MyDBConnection")));
+-------------------------------------------------------------------------------------------------------------

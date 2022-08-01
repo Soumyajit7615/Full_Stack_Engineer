@@ -1,0 +1,53 @@
+Windows Service
+Windows Service c# corner
+1.switch to code view
+2.right click->Add Installer->go to installer
+3. this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
+4.
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.ServiceProcess;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace MyLogDetailsServices
+{
+    public partial class Service1 : ServiceBase
+    {
+        public Service1()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            if (!File.Exists(@"F:\CTSDEMO\Log.txt"))
+            {
+                File.Create(@"F:\CTSDEMO\Log.txt");
+            }
+            using (StreamWriter sw = new StreamWriter(@"F:\CTSDEMO\Log.txt", true))
+            {
+                sw.WriteLine($"Service starts at : {DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")}");
+
+            }
+        }
+
+        protected override void OnStop()
+        {
+            using (StreamWriter sw = new StreamWriter(@"F:\CTSDEMO\Log.txt", true))
+            {
+                sw.WriteLine($"Service stops at : {DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")}");
+
+            }
+        }
+    }
+}
+
+5.Visual studio cmd prompt -> run as admin -> 
+6.InstallUtil.exe name.exe
+7.InstallUtil -u name.exe

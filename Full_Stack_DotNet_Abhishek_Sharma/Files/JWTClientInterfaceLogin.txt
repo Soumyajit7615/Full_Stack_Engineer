@@ -1,0 +1,508 @@
+JWTbearerAuthenticationCoreClientWebAPP
+-----------------------------------------------------------------------------------------------
+  public class Product
+    {
+        public int ProductCode { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+    }
+-----------------------------------------------------------------------------------------------
+ using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebAppCoreJWAuthenticationProductService.Models
+{
+    public class UserDetail
+    {
+        //[Required(ErrorMessage = "UserId should not be blank")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId { get; set; }
+
+        [ForeignKey("UserType")]
+        public int UserTypeId { get; set; }
+
+        [DisplayName("First Name")]
+        [StringLength(30, MinimumLength = 5)]//length
+        [Required(ErrorMessage = "First Name can`t be blank")]
+        public string FName { get; set; }
+
+        [DisplayName("Last Name")]
+        [StringLength(30, MinimumLength = 5)]//length
+        [Required(ErrorMessage = "Last Name can`t be blank")]
+        public string LName { get; set; }
+
+        [StringLength(30, MinimumLength = 8)]//length
+        [DisplayName("UserName")]
+        [Required(ErrorMessage = "User Name can`t be blank")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "Date of Birth can`t be blank")]
+        public DateTime Dob { get; set; }
+        //[StringLength(6, MinimumLength = 4)]//length
+
+        [Required(ErrorMessage = "Please select gender")]
+        public string Gender { get; set; }
+
+        [DisplayName("PhoneNumber")]
+        [RegularExpression("^[5-9][0-9]{9}$")]//check reg expression_
+        [Required(ErrorMessage = "Enter Correct Phone Number")]
+        public string PhoneNumber { get; set; }
+
+        [DisplayName("Email")]
+        [EmailAddress]
+        [Required(ErrorMessage = "Enail id can`t be blank")]
+        public string Email { get; set; }
+
+        [DisplayName("Password")]
+        [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")]
+        [Required(ErrorMessage = "Password can`t be blank")]
+        public string Password { get; set; }
+
+        [ForeignKey("SecurityQuestion")]
+        [Required(ErrorMessage = "Select Security Question")]
+        public int SqId { get; set; }
+
+        [StringLength(30, MinimumLength = 3)]
+        [DisplayName("Answer")]
+        [Required(ErrorMessage = "Security answer cannot be empty")]
+        public string SqAns { get; set; }
+               
+    }
+}
+---------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebAppCoreJWAuthenticationProductService.Models
+{
+
+        public class UserModel
+        {
+        [DisplayName("Email")]
+        [EmailAddress]
+        [Required(ErrorMessage = "Enail id can`t be blank")]
+        public string Email { get; set; }
+
+        [DisplayName("Password")]
+        [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")]
+        [Required(ErrorMessage = "Password can`t be blank")]
+        public string Password { get; set; }
+
+    }
+
+}
+-------------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebAppCoreJWAuthenticationProductService.Models
+{
+    public class UserType
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserTypeId { get; set; }
+
+        [DisplayName("User Type")]
+        [Required(ErrorMessage = "Login type should not be blank eg. Manager / User")]
+        [StringLength(30, MinimumLength = 5)]
+        public string UserTypeName { get; set; }
+
+      
+
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebAppCoreJWAuthenticationProductService.Models
+{
+    public class JWT
+    {
+        public string Token { get; set; }
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using System.Text;
+using System.Net;
+using System.Net.Http.Json;
+using WebAppCoreJWAuthenticationProductService.Models;
+
+
+namespace WebAppCoreJWAuthenticationProductService.Controllers
+{
+    public class JWTClientController : Controller
+    {
+        // GET: JWTClientController
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UserModel userModel)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(userModel), Encoding.UTF8, "application/json");
+
+            
+                using (var response = await httpClient.PostAsync("http://localhost:1635/api/JWTUserrAuthService/Authenticate/", content))
+                {
+                    //string apiResponse = await response.Content.ReadAsStringAsync();
+
+                    string stringJWT = response.Content.ReadAsStringAsync().Result;
+
+
+                    JWT jwt = JsonConvert.DeserializeObject<JWT>(stringJWT);
+                    if (jwt.Token != null)
+                    {
+                        HttpContext.Session.SetString("token", jwt.Token);
+                        ViewBag.Message = "User logged in successfully!";
+                        return View("UserHome");
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Invalid email or password!";
+                        return RedirectToAction("Index");
+                    }
+
+
+
+                }
+
+
+            }
+        }
+
+            [HttpGet]
+            public ActionResult UserHome()
+            {
+                return View();
+            }
+
+            [HttpPost]
+            // GET: JWTClientController/ShowData
+            public IActionResult ShowData()
+            {
+                string baseUrl = "http://localhost:1635/";
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri(baseUrl);
+                var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+                client.DefaultRequestHeaders.Accept.Add(contentType);
+
+                client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer",
+            HttpContext.Session.GetString("token"));
+
+                HttpResponseMessage response = client.GetAsync("api/JWTUserrAuthService").Result;
+                string stringData = response.Content.ReadAsStringAsync().Result;
+                List<Product> data = JsonConvert.DeserializeObject<List<Product>>(stringData);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    ViewBag.Message = "Unauthorized!";
+                }
+                else
+                {
+
+                    return View(data);
+                }
+                ViewBag.Message = "User logged out successfully!";
+                return View("Index");
+            }
+        // GET: JWTClientController/Logout
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("token");
+            ViewBag.Message = "User logged out successfully!";
+            return View("Index");
+        }
+
+        // GET: JWTClientController/Details/5
+        public ActionResult Details(int id)
+            {
+                return View();
+            }
+
+            // GET: JWTClientController/Create
+            public ActionResult Create()
+            {
+                return View();
+            }
+
+            // POST: JWTClientController/Create
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Create(IFormCollection collection)
+            {
+                try
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
+            }
+
+            // GET: JWTClientController/Edit/5
+            public ActionResult Edit(int id)
+            {
+                return View();
+            }
+
+            // POST: JWTClientController/Edit/5
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Edit(int id, IFormCollection collection)
+            {
+                try
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
+            }
+
+            // GET: JWTClientController/Delete/5
+            public ActionResult Delete(int id)
+            {
+                return View();
+            }
+
+            // POST: JWTClientController/Delete/5
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Delete(int id, IFormCollection collection)
+            {
+                try
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
+            }
+        }
+    }
+
+----------------------------------------------------------------------------------------------------------------------------
+index.cshtml
+
+
+@model WebAppCoreJWAuthenticationProductService.Models.UserModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h4>UserModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login" asp-controller="JWTClient" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+        <h2>@Html.Raw(@ViewBag.Message)</h2>
+    </div>
+</div>
+<div class="display-4">
+    Serialization is the process of converting an object into a stream of bytes to store the object or transmit it to memory, a database, or a file. Its main purpose is to save the state of an object in order to be able to recreate it when needed. The reverse process is called deserialization
+
+</div>
+<div>
+    <a asp-action="SignUp" class="btn-info btn-sm">Sign Up</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+---------------------------------------------------------------------------------------------------------
+
+@{
+    ViewData["Title"] = "UserHome";
+}
+
+<h1>UserHome</h1>
+
+<form method="post">
+    <button type="submit" asp-action="Login"
+            asp-controller="JWTClient">
+        Sign In
+    </button>
+    <button type="submit" asp-action="Logout"
+            asp-controller="JWTClient">
+        Sign Out
+    </button>
+    <button type="submit" asp-action="ShowData"
+            asp-controller="JWTClient">
+        Show Data
+    </button>
+    <h2>@Html.Raw(@ViewBag.Message)</h2>
+</form>
+
+------------------------------------------------------------------------------------------------------
+@model IEnumerable<JWTbearerAuthenticationCoreClientWebAPP.Models.Product>
+
+@{
+    ViewData["Title"] = "ShowData";
+}
+
+<h1>ShowData</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPrice)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductPrice)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
