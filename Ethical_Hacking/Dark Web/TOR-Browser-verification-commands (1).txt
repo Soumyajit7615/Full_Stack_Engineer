@@ -1,0 +1,3 @@
+gpg --keyserver pool.sks-keyservers.net --recv-keys 0x4E2C6E8793298290
+gpg --fingerprint 0x4E2C6E8793298290
+gpg --verify [TOR .asc signature file]

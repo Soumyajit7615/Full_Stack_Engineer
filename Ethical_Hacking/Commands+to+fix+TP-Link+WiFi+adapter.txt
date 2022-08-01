@@ -1,0 +1,3 @@
+Short link for commands: https://bit.ly/tp-link-tl-wn722n
+
+Direct link: https://github.com/davidbombal/Kali-Linux/blob/main/TP-Link%20TL-WN722N%20adapter

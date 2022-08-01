@@ -1,0 +1,16 @@
+Recommended Adapters:
+Alfa AWUS036NHA: https://amzn.to/3wnyVen
+Alfa AWUS036ACM: https://amzn.to/3fCL4WT
+Alfa AWUS036ACH: https://amzn.to/3rLAjny or https://amzn.to/2PxkkMV
+
+Others:
+Alfa AWUS1900: https://amzn.to/31E0AtH
+Alfa Long-Range Dual-Band AC1200: https://amzn.to/34UUCEL
+Alfa AWUS036NEH: https://amzn.to/3sK2iW8
+Panda PAU05: https://amzn.to/3ue23Da
+Panda PAU06: https://amzn.to/3wwqRZ8
+Panda PAU09: https://amzn.to/3wosx6X
+WiFi Nation 802.11ac AC600: https://amzn.to/3cLQddm
+WiFi Nation Atheros AR9271: https://amzn.to/3u8JUqm
+
+See Aircrack FAQ for more: https://bit.ly/39AtWNZ

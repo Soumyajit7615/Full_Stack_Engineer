@@ -1,0 +1,5 @@
+Script1: https://bit.ly/3vYsbng
+Direct GitHub link: https://github.com/davidbombal/red-python-scripts/blob/main/wifi_dos_type1.py
+
+Script2: https://bit.ly/3clToZ4
+Direct GitHub link: https://github.com/davidbombal/red-python-scripts/blob/main/wifi_dos_type2.py
